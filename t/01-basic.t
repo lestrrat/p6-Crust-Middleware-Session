@@ -4,7 +4,7 @@ use Crust::Middleware::Session;
 use Cookie::Baker;
 
 my &app = sub (%env) {
-    return [ 200, [ "Content-Type" => "text/plain" ], [ "Hello, World!" ] ];
+    return start { [ 200, [ "Content-Type" => "text/plain" ], [ "Hello, World!" ] ] };
 };
 
 subtest {
@@ -56,7 +56,7 @@ subtest {
     my %env = (
         HTTP_COOKIE => "",
     );
-    my @res = $mw.(%env);
+    my @res = await $mw.(%env);
 
     my %h = @res[1];
     for %h.kv -> $k, $v {
