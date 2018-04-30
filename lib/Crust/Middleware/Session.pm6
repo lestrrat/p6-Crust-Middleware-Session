@@ -103,7 +103,7 @@ method CALL-ME(%env) {
         %env<p6sgix.session> = $session;
     }
 
-    my @ret = $.app()(%env);
+    my @ret = await $.app()(%env);
     return self.finalize(%env, @ret, $session);
 }
 
@@ -198,7 +198,7 @@ method finalize(%env, @res, $session) {
         self.set-cookie(@res, $session);
     }
 
-    return @res;
+    return start { @res };
 }
 
 method set-cookie(@res, $session) {

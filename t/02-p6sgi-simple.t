@@ -14,25 +14,25 @@ CATCH { default { $_.say } }
         if my $username = %env<p6sgix.session>.get('username') {
             $body = "TOP: Hello $username";
         }
-        [200, [], [$body]];
+        start { [200, [], [$body]] };
     };
     mount '/login', -> %env {
         %env<p6sgix.session>.set('username', 'foo');
-        [200, [], ["LOGIN"]];
+        start { [200, [], ["LOGIN"]] };
     };
     mount '/counter', -> %env {
         my $counter = %env<p6sgix.session>.get('counter') // 0;
         $counter++;
         %env<p6sgix.session>.set('counter', $counter);
-        [200,[],["COUNTER=>" ~ $counter]];
+        start { [200,[],["COUNTER=>" ~ $counter]] };
     };
     mount '/logout', -> %env {
         %env<p6sgix.session>.expired = True;
-        [200,[],["LOGOUT"]];
+        start { [200,[],["LOGOUT"]] };
     };
 };
 
-test-psgi(&app, -> $cb {
+test-p6w(&app, sub ($cb) {
     my $first-cookie;
     subtest {
         my $res = $cb(HTTP::Request.new(GET => "http://localhost/"));
