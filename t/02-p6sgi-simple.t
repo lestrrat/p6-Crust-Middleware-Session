@@ -32,7 +32,7 @@ CATCH { default { $_.say } }
     };
 };
 
-test-psgi(&app, -> $cb {
+test-p6w(&app, -> $cb {
     my $first-cookie;
     subtest {
         my $res = $cb(HTTP::Request.new(GET => "http://localhost/"));
